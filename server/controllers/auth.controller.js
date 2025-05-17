@@ -82,7 +82,94 @@ const loginController = async (req, res) => {
     }
 }
 
+const getAllUserController = async (req, res) => {
+    try {
+        const users = await userModel.find();
+        res.status(200).json({
+            success: true,
+            message: 'Lấy danh sách người dùng thành công',
+            users
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: 'Lỗi lấy danh sách người dùng',
+            error: error.message
+        })
+    }
+}
+
+const getUserByIdController = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const user = await userModel.findById(id);
+        if (!user) {
+            return res.status(404).send({
+                success: false,
+                message: 'Không tìm thấy người dùng',
+                error: error.message
+            })
+        }
+        res.status(200).json({
+            success: true,
+            message: 'Lấy thông tin người dùng thành công',
+            user
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: 'Lỗi lấy thông tin người dùng',
+            error: error.message
+        })
+    }
+}
+
+//count
+const countUser = async (req, res) => {
+    try {
+        const count = await userModel.countDocuments();
+        res.status(200).json({
+            success: true,
+            message: 'Lấy số lượng người dùng thành công',
+            count
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: 'Lỗi lấy số lượng người dùng',
+            error: error.message
+        })
+    }
+}
+const deleteUserController = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const xoaUser = await userModel.findByIdAndDelete(id);
+        if (!xoaUser) {
+            return res.status(404).json({
+                message: 'Nguoi dungf ko ton tai'
+            })
+        }
+        res.status(200).json({
+            message: 'Xoas người dùng thành công'
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: 'Lỗi khi Xoa người dùng ',
+            error: error.message
+        })
+    }
+}
+
 module.exports = {
     registerController,
-    loginController
+    loginController,
+    getAllUserController,
+    getUserByIdController,
+    countUser,
+    deleteUserController
 }
