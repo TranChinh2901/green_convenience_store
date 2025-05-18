@@ -18,11 +18,12 @@ const productSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
-        priceSale: {
-            type: Number,
+        image: {
+            type: String,
             required: true,
         },
-        image: {
+        images: [String],
+        color: {
             type: String,
             required: true,
         },
@@ -44,24 +45,19 @@ const productSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
-        reviews: [
-            {
-                user: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "User",
-                    required: true,
-                },
-                comment: {
-                    type: String,
-                    required: true,
-                },
-                rating: {
-                    type: Number,
-                    required: true,
-                },
-            },
-        ],
-
+        status: {
+            type: String,
+            enum: ['active', 'inactive', 'out_of_stock'],
+            default: 'active'
+        },
+        discountPercent: {
+            type: Number,
+            default: 0
+        },
+        isDealHot: {
+            type: Boolean,
+            default: false
+        }
     },
     {
         timestamps: true,
