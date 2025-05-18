@@ -1,12 +1,16 @@
+const { mongoose } = require("mongoose")
+
 const categorySchema = new mongoose.Schema({
     //create category schema
     name: {
         type: String,
         required: true,
+        trim: true
     },
     slug: {
         type: String,
         required: true,
+        trim: true
     },
     image: {
         type: String,
@@ -16,10 +20,10 @@ const categorySchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    products: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Product",
-        },
-    ],
+    brand: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Brand', // Tham chiếu đến model Brand
+        required: true
+    }
 }, { timestamps: true })
+module.exports = mongoose.model('Category', categorySchema)

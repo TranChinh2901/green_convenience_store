@@ -13,6 +13,7 @@ const productSchema = new mongoose.Schema(
         price: {
             type: Number,
             required: true,
+            min: 0
         },
         priceGoc: {
             type: Number,
@@ -23,10 +24,6 @@ const productSchema = new mongoose.Schema(
             required: true,
         },
         images: [String],
-        color: {
-            type: String,
-            required: true,
-        },
         category: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Category",
@@ -40,19 +37,24 @@ const productSchema = new mongoose.Schema(
         quantity: {
             type: Number,
             required: true,
+            min: 0
         },
         rating: {
             type: Number,
             default: 0,
+            min: 0,
+            max: 5
         },
         status: {
             type: String,
-            enum: ['active', 'inactive', 'out_of_stock'],
-            default: 'active'
+            enum: ['còn hàng', 'hiện đã ngừng kinh doanh', 'hết hàng'],
+            default: 'còn hàng'
         },
         discountPercent: {
             type: Number,
-            default: 0
+            default: 0,
+            min: 0,
+            max: 100
         },
         isDealHot: {
             type: Boolean,
@@ -63,4 +65,11 @@ const productSchema = new mongoose.Schema(
         timestamps: true,
     }
 )
-module.exports = mongoose.model('Product', productSchema)
+productSchema.virtual('discountedPrice').get(function () {
+    if (this.discountPercent > 0) {
+        return this.priceGoc * (1 - this.discountPercent / 100);
+    }
+    return this.price;
+});
+
+module.exports = mongoose.model('Product', productSchema);
