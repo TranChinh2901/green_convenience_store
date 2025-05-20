@@ -26,7 +26,7 @@ const categorySchema = new mongoose.Schema({
     },
     brand: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Brand', // Tham chiếu đến model Brand
+        ref: 'Brand',
         required: true
     }
 }, { timestamps: true })
