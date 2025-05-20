@@ -1,4 +1,5 @@
 const brandModel = require("../models/brand.model");
+const mongoose = require('mongoose');
 const slugify = require("slugify");
 
 const createBrandController = async (req, res) => {
@@ -113,9 +114,44 @@ const updateBrandController = async (req, res) => {
         });
     }
 }
+
+const deleteBrandController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'ID không hợp lệ',
+            });
+        }
+        const brand = await brandModel.findByIdAndDelete(id);
+        if (!brand) {
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy thương hiệu để xóa',
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: 'Xóa thương hiệu thành công',
+            brand
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: 'Lỗi khi xóa thương hiệu',
+            error: error.message
+        });
+    }
+};
+
+module.exports = { deleteBrandController };
+
 module.exports = {
     createBrandController,
     getALlBrandController,
     getBrandBySlugController,
-    updateBrandController
+    updateBrandController,
+    deleteBrandController
 }
