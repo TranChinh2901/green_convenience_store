@@ -2,8 +2,8 @@ const categoryModel = require("../models/category.model");
 
 const createCategory = async (req, res) => {
     try {
-        const { name, image, description } = req.body;
-        if (!name || !image || !description) {
+        const { name, image, description, imageBanner } = req.body;
+        if (!name || !image || !description, !imageBanner) {
             return res.status(400).json({
                 success: false,
                 message: "Vui lòng nhập đầy đủ thông tin"
@@ -21,7 +21,8 @@ const createCategory = async (req, res) => {
             name,
             slug,
             image,
-            description
+            description,
+            imageBanner
         })
         const savedCategory = await newCategory.save();
         return res.status(201).json({

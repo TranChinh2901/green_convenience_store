@@ -6,6 +6,7 @@ const connectDB = require('./config/db.config');
 const usersRouter = require('./routes/auth.route')
 const productRouter = require('./routes/product.route')
 const categoryRouter = require('./routes/category.route')
+const brandRouter = require('./routes/brand.route')
 require('dotenv').config();
 
 const app = express();
@@ -23,6 +24,7 @@ const PORT = process.env.PORT || 3001;
 app.use('/api/v1', usersRouter)
 app.use('/api/v2', productRouter)
 app.use('/api/v3', categoryRouter)
+app.use('/api/v4', brandRouter)
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
