@@ -324,28 +324,23 @@ const relatedProductController = async (req, res) => {
     try {
         const { pId, cId } = req.params;
         console.log("pId:", pId, "cId:", cId);
-        const { limit = 10 } = req.query; // Số lượng sản phẩm muốn lấy, mặc định là 3
-
-        // Kiểm tra ID sản phẩm và ID danh mục có hợp lệ không
+        const { limit = 10 } = req.query;
         if (!pId || !cId) {
             return res.status(400).send({
                 success: false,
                 message: "Thiếu thông tin ID sản phẩm hoặc ID danh mục",
             });
         }
-
-        // Tìm sản phẩm tương tự dựa theo danh mục, loại trừ sản phẩm hiện tại
         const relatedProducts = await productModel.find({
             category: cId,
-            _id: { $ne: pId } // Loại trừ sản phẩm hiện tại
+            _id: { $ne: pId }
         })
-            .select("-image -images") // Loại bỏ dữ liệu ảnh lớn để tối ưu hiệu suất
+            .select("-image -images")
             .limit(parseInt(limit))
             .populate("category")
             .populate("brand")
-            .sort({ createdAt: -1 }); // Sắp xếp theo thời gian tạo, mới nhất lên đầu
+            .sort({ createdAt: -1 });
 
-        // Kiểm tra nếu không tìm thấy sản phẩm tương tự
         if (relatedProducts.length === 0) {
             return res.status(200).send({
                 success: true,
@@ -353,8 +348,6 @@ const relatedProductController = async (req, res) => {
                 products: [],
             });
         }
-
-        // Trả về kết quả
         res.status(200).send({
             success: true,
             message: "Lấy sản phẩm tương tự thành công",
@@ -370,6 +363,23 @@ const relatedProductController = async (req, res) => {
         });
     }
 };
+const getNewProductsController = async (req, res) => {
+    try {
+        const products = await productModel.find({}).select("-image -images").sort({ createdAt: -1 }).limit(5);
+        res.status(200).send({
+            success: true,
+            message: 'Lấy sản phẩm mới thành công',
+            products,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            success: false,
+            message: 'Lỗi hàm getNewProductsController',
+            error: error.message,
+        });
+    }
+}
 module.exports = {
     createProductController,
     getAllProductsController,
@@ -380,5 +390,6 @@ module.exports = {
     getProductByIdController,
     countProductController,
     productListController,
-    relatedProductController
+    relatedProductController,
+    getNewProductsController
 };
