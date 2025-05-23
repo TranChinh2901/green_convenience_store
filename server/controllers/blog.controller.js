@@ -38,6 +38,80 @@ const createBlogController = (req, res) => {
         })
     }
 }
+const getAllBlogController = async (req, res) => {
+    try {
+        const blogs = await blogModel.find();
+        if (!blogs) {
+            return res.status(404).json({
+                success: false,
+                message: "No blogs found"
+            })
+        }
+        res.status(200).json({
+            success: true,
+            message: "Blogs fetched successfully",
+            blogs
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: error.message
+        })
+    }
+}
+const getBlogByIdController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const blog = await blogModel.findById(id);
+        if (!blog) {
+            return res.status(404).json({
+                success: false,
+                message: "Blog not found"
+            })
+        }
+        res.status(200).json({
+            success: true,
+            message: "Blog fetched successfully",
+            blog
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: error.message
+        })
+    }
+}
+const deleteBlogController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const blog = await blogModel.findByIdAndDelete(id);
+        if (!blog) {
+            return res.status(404).json({
+                success: false,
+                message: "Blog not found"
+            })
+        }
+        res.status(200).json({
+            success: true,
+            message: "Blog deleted successfully",
+            blog
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: error.message
+        })
+    }
+}
 module.exports = {
-    createBlogController
+    createBlogController,
+    getAllBlogController,
+    getBlogByIdController,
+    deleteBlogController
 }
