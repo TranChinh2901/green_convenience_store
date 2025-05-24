@@ -109,9 +109,44 @@ const deleteBlogController = async (req, res) => {
         })
     }
 }
+const updateBlogController = async (req, res) => {
+    try {
+        const { title, content, image } = req.body;
+        const { id } = req.params;
+
+        const blog = await blogModel.findById(id);
+        if (!blog) {
+            return res.status(404).json({
+                success: false,
+                message: "Blog not found"
+            });
+        }
+
+        const updatedBlog = await blogModel.findByIdAndUpdate(
+            id,
+            { title, content, image },
+            { new: true }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Blog updated successfully",
+            blog: updatedBlog
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     createBlogController,
     getAllBlogController,
     getBlogByIdController,
-    deleteBlogController
+    deleteBlogController,
+    updateBlogController
 }
